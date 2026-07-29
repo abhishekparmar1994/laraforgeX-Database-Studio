@@ -103,22 +103,7 @@ Once you upload this repository to GitHub and submit it to [Packagist.org](https
 composer require laraforge/database-studio
 ```
 
-#### Steps to Publish on Packagist:
-1. Create a GitHub repository (e.g. `https://github.com/your-username/laravel-database-studio`).
-2. Push your package code:
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: initial release of database studio package"
-   git remote add origin https://github.com/your-username/laravel-database-studio.git
-   git tag 1.0.0
-   git push -u origin main --tags
-   ```
-3. Log in to [Packagist.org](https://packagist.org), click **Submit**, and paste your GitHub repository URL.
-
----
-
-### Step 2: Publish Configuration (Optional)
+### Option 3: Publish Configuration (Optional)
 
 Publish the `database-studio.php` config file to customize route path, middleware, and protected tables:
 
@@ -128,7 +113,7 @@ php artisan vendor:publish --tag=database-studio-config
 
 ---
 
-### Step 3: Access the Web Dashboard
+### Option 4: Access the Web Dashboard
 
 Open your browser and navigate to:
 
