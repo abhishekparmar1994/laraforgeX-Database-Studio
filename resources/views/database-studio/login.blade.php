@@ -50,7 +50,7 @@
         <div class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-amber-400 to-brand-600 shadow-2xl shadow-amber-500/20 mb-2 border border-white/20">
           <i class="fa-solid fa-lock text-white text-2xl"></i>
         </div>
-        <h1 class="text-2xl font-black text-white tracking-tight">Database Studio Gateway</h1>
+        <h1 class="text-2xl font-black text-white tracking-tight">LaraforgeX Database Studio Gateway</h1>
         <p class="text-xs text-slate-400 font-medium">Please authenticate with your security credentials to access the database manager.</p>
       </div>
 
