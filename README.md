@@ -142,6 +142,26 @@ http://jobqueue.test/database-studio
 
 ---
 
+## 🔄 Updating Database Studio
+
+When a new version of `laraforge/database-studio` is released, users can update in two simple steps:
+
+### Step 1: Update via Composer
+
+```bash
+composer update laraforge/database-studio
+```
+
+### Step 2: Re-publish Configuration File (Optional)
+
+If the update introduces new configuration settings, users can force update their published config file:
+
+```bash
+php artisan vendor:publish --tag=database-studio-config --force
+```
+
+---
+
 ## ⚙️ Configuration (`config/database-studio.php`)
 
 ```php
