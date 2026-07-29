@@ -8,6 +8,18 @@ A self-contained, Navicat & phpMyAdmin grade **Database Studio & Table Manager G
 
 ---
 
+## 📸 Screenshots
+
+| Dashboard Explorer | Visual Table Creator |
+| :---: | :---: |
+| ![Database Studio Dashboard](art/dashboard.png) | ![Visual Table Creator](art/create-table.png) |
+
+| SQL Query Console | Table Inspector & Data Grid |
+| :---: | :---: |
+| ![SQL Console](art/sql-console.png) | ![Table Inspector](art/inspect-table.png) |
+
+---
+
 ## 🌟 Key Features
 
 - ⚡ **Zero DB Setup Needed**: Automatically detects and uses your host Laravel application's active database connection credentials from your `.env` file out-of-the-box.

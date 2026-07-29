@@ -42,7 +42,8 @@ return [
     |--------------------------------------------------------------------------
     | Connection Settings
     |--------------------------------------------------------------------------
-    | The database connection used by Database Studio (null defaults to default connection).
+    | The database connection used by Database Studio.
+    | Set to null to automatically inherit host app's active .env database credentials.
     */
     'connection' => env('DB_STUDIO_CONNECTION', null),
 
