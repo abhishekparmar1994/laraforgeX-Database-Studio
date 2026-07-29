@@ -55,9 +55,9 @@
 </head>
 <body class="bg-slate-50 font-sans antialiased text-slate-800 min-h-screen">
     
-    <!-- Top Navigation Header -->
+    <!-- Top Navigation Header (Full Width) -->
     <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="w-full px-6 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <a href="{{ url(config('database-studio.path', 'database-studio')) }}" class="flex items-center gap-2.5 text-white no-underline">
             <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-400 to-brand-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
@@ -70,38 +70,25 @@
           </a>
         </div>
 
-        <nav class="flex items-center gap-2">
-          <a href="{{ url(config('database-studio.path', 'database-studio')) }}" 
-             class="px-3.5 py-2 rounded-lg text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
-            <i class="fa-solid fa-table-cells text-slate-400"></i> Tables Explorer
-          </a>
-          <a href="{{ url(config('database-studio.path', 'database-studio') . '/create') }}" 
-             class="px-3.5 py-2 rounded-lg text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
-            <i class="fa-solid fa-plus-circle text-emerald-400"></i> New Table
-          </a>
-          <a href="{{ url(config('database-studio.path', 'database-studio') . '/console') }}" 
-             class="px-3.5 py-2 rounded-lg text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
-            <i class="fa-solid fa-terminal text-amber-400"></i> SQL Console
-          </a>
-
+        <div>
           @if(config('database-studio.auth.enabled', true))
             <a href="{{ url(config('database-studio.path', 'database-studio') . '/logout') }}" 
-               class="ml-2 px-3 py-1.5 rounded-lg text-xs font-bold text-rose-300 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/50 transition flex items-center gap-1.5" title="Sign out of Database Studio session">
-              <i class="fa-solid fa-right-from-bracket text-rose-400 text-[11px]"></i> Logout
+               class="px-3.5 py-2 rounded-xl text-xs font-bold text-rose-300 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/50 transition flex items-center gap-2 no-underline" title="Sign out of Database Studio session">
+              <i class="fa-solid fa-right-from-bracket text-rose-400 text-xs"></i> Logout
             </a>
           @endif
-        </nav>
+        </div>
       </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Container (Full Width Full Screen) -->
+    <main class="w-full px-6 py-6">
         @yield('content')
     </main>
 
-    <!-- Footer -->
+    <!-- Footer (Full Width) -->
     <footer class="border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-400">
-      <div class="max-w-7xl mx-auto px-4">
+      <div class="w-full px-6">
         <p>Powered by <strong>Laraforge Database Studio</strong> — Navicat & phpMyAdmin Grade GUI Package for Laravel.</p>
       </div>
     </footer>
