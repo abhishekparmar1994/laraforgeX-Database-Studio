@@ -1,3 +1,5 @@
+URL : https://packagist.org/packages/laraforge/database-studio
+
 # LaraforgeX Database Studio & Table Manager GUI
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laraforge/database-studio.svg?style=flat-shadow)](https://packagist.org/packages/laraforge/database-studio)
