@@ -45,7 +45,7 @@ return [
     | Route Middleware
     |--------------------------------------------------------------------------
     | The middleware assigned to Database Studio web and API routes.
-    | 'web' middleware is included for API routes to enable session auth & cookies.
+    | 'web' middleware is included in API to share session auth state & cookies.
     */
     'middleware' => [
         'web' => ['web'],

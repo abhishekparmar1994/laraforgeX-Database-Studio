@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Route;
 use Laraforge\DatabaseStudio\Http\Controllers\DatabaseStudioWebController;
 use Laraforge\DatabaseStudio\Http\Middleware\DatabaseStudioAuthMiddleware;
 
-// Guest Login Routes
+// Guest Security Login Routes
 Route::get('/login', [DatabaseStudioWebController::class, 'showLogin'])->name('login');
 Route::post('/login', [DatabaseStudioWebController::class, 'login'])->name('login.post');
 Route::get('/logout', [DatabaseStudioWebController::class, 'logout'])->name('logout');
 
-// Authenticated Protected Routes
+// Protected Dashboard Routes
 Route::middleware([DatabaseStudioAuthMiddleware::class])->group(function () {
     Route::get('/', [DatabaseStudioWebController::class, 'index'])->name('index');
     Route::get('/create', [DatabaseStudioWebController::class, 'create'])->name('create');

@@ -58,7 +58,7 @@ class DatabaseStudioWebController extends Controller
     }
 
     /**
-     * Authenticate security credentials against package configuration.
+     * Authenticate security credentials against package configuration or .env.
      */
     public function login(Request $request): RedirectResponse
     {
@@ -67,8 +67,9 @@ class DatabaseStudioWebController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $expectedUsername = config('database-studio.auth.username', 'admin@admin.com');
-        $expectedPassword = config('database-studio.auth.password', 'admin123');
+        // Fallback to env() if published config file in host app is missing the 'auth' key
+        $expectedUsername = config('database-studio.auth.username') ?? env('DB_STUDIO_AUTH_USERNAME', 'admin@admin.com');
+        $expectedPassword = config('database-studio.auth.password') ?? env('DB_STUDIO_AUTH_PASSWORD', 'admin123');
 
         $inputUsername = trim((string) $request->input('username'));
         $inputPassword = (string) $request->input('password');

@@ -62,10 +62,15 @@ class DatabaseStudioServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
         });
 
-        // Register API Routes
+        // Register API Routes (includes 'web' for session cookie support)
+        $apiMiddleware = config('database-studio.middleware.api', ['web', 'api']);
+        if (!in_array('web', (array) $apiMiddleware, true)) {
+            $apiMiddleware = array_merge(['web'], (array) $apiMiddleware);
+        }
+
         Route::group([
             'prefix'     => config('database-studio.api_prefix', 'api/v1/database-manager'),
-            'middleware' => config('database-studio.middleware.api', ['api']),
+            'middleware' => $apiMiddleware,
             'as'         => 'database-studio.api.',
         ], function () {
             $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');

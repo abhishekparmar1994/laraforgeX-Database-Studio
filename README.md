@@ -133,11 +133,7 @@ php artisan vendor:publish --tag=database-studio-config
 Open your browser and navigate to:
 
 ```text
-http://localhost/jobQueue/public/database-studio
-```
-or
-```text
-http://jobqueue.test/database-studio
+http://mysite.test/database-studio
 ```
 
 ---
@@ -156,17 +152,20 @@ Laravel caches compiled Blade views and config files. Clear them to load updated
 ```bash
 php artisan optimize:clear
 ```
-*(Or run `php artisan view:clear && php artisan config:clear`)*
 
-### Step 3: Force Re-publish Updated Config/Views (If Previously Published)
-If views or configs were published previously to `resources/views/vendor/database-studio`:
+## 🗑️ Uninstalling & Removing Package
+
+To completely remove Database Studio from a Laravel application:
+
+### Step 1: Remove via Composer
 ```bash
-php artisan vendor:publish --tag=database-studio-views --force
-php artisan vendor:publish --tag=database-studio-config --force
+composer remove laraforge/database-studio
 ```
 
-### Step 4: Hard Reload Browser
-Press `Ctrl + F5` or `Ctrl + Shift + R` in the browser to clear cached CSS/JS.
+### Step 2: Clear Laravel Cache
+```bash
+php artisan optimize:clear
+```
 
 ---
 

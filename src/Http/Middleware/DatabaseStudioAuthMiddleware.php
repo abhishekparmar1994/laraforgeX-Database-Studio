@@ -19,14 +19,18 @@ class DatabaseStudioAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $authEnabled = config('database-studio.auth.enabled', true);
+        // Fallback to env() if published config file in host app is missing the 'auth' key
+        $authEnabled = config('database-studio.auth.enabled');
+        if ($authEnabled === null) {
+            $authEnabled = env('DB_STUDIO_AUTH_ENABLED', true);
+        }
 
         if (!$authEnabled) {
             return $next($request);
         }
 
         // Check if user is authenticated in session
-        if (session('database_studio_authenticated') === true) {
+        if ($request->hasSession() && $request->session()->get('database_studio_authenticated') === true) {
             return $next($request);
         }
 
