@@ -1,0 +1,46 @@
+{
+    "name": "laraforge/database-studio",
+    "description": "Headless Database Studio & Visual Table Explorer GUI for Laravel applications.",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "database",
+        "table-manager",
+        "gui",
+        "navicat",
+        "phpmyadmin",
+        "sql-console",
+        "schema-builder"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "LaraforgeX Team"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/http": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/routing": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/database": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/view": "^10.0|^11.0|^12.0|^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laraforge\\DatabaseStudio\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laraforge\\DatabaseStudio\\DatabaseStudioServiceProvider"
+            ],
+            "aliases": {
+                "DatabaseStudio": "Laraforge\\DatabaseStudio\\Facades\\DatabaseStudio"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
