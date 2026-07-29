@@ -25,7 +25,7 @@ A self-contained, Navicat & phpMyAdmin grade **Database Studio & Table Manager G
 - ⚡ **Zero DB Setup Needed**: Automatically detects and uses your host Laravel application's active database connection credentials from your `.env` file out-of-the-box.
 - 📊 **Interactive Database Dashboard**: View table engine types, estimated row counts, data/index disk sizes, and table collations.
 - 🛠️ **Visual Table Creator Wizard**: Design new database tables, define column data types, precision, nullability, auto-increments, and default values.
-- 🔍 **Schema Inspector & Data Grid**: Inspect columns, indexes, foreign keys, filter records in real-time, and browse live rows.
+- 🔍 **Schema Inspector & Data Grid**: Inspect columns, indexes, foreign keys, filter records in real-time with AND logic rules, and browse live rows.
 - 💻 **Interactive SQL Console**: Execute raw `SELECT`, `INSERT`, `UPDATE`, `ALTER`, or `CREATE` queries directly from your browser.
 - 📥 **One-Click CSV / Excel Exporter**: Export filtered table records directly to UTF-8 CSV or XML Excel formats.
 - 🔒 **Safety Guards**: Protect critical system tables (`migrations`, `failed_jobs`, `users`) from accidental truncation or dropping.
@@ -47,23 +47,57 @@ DB_USERNAME=root
 DB_PASSWORD=secret
 ```
 
-### Need a Secondary Connection?
-To inspect a secondary database connection defined in your `config/database.php`, simply set:
-```env
-DB_STUDIO_CONNECTION=secondary_db
-```
-
 ---
 
 ## 🚀 Installation Guide
 
-### Step 1: Install via Composer
+### Option 1: Installing Locally for Development (e.g. in `C:\laragon\www\jobQueue`)
 
-Add the package to your Laravel project via Composer:
+Since the package is located on your local disk at `C:/laragon/www/laravel-database-studio`, configure Composer in your target project (`jobQueue`) to use a local `path` repository:
+
+1. Open your target application's `composer.json` (e.g. `C:\laragon\www\jobQueue\composer.json`).
+2. Add the `"repositories"` block:
+
+```json
+"repositories": [
+    {
+        "type": "path",
+        "url": "../laravel-database-studio",
+        "options": {
+            "symlink": true
+        }
+    }
+]
+```
+
+3. Run the require command in your terminal:
+
+```bash
+composer require laraforge/database-studio:@dev
+```
+
+---
+
+### Option 2: Installing Globally via Packagist (Public Package)
+
+Once you upload this repository to GitHub and submit it to [Packagist.org](https://packagist.org), anyone anywhere in the world can install it directly by running:
 
 ```bash
 composer require laraforge/database-studio
 ```
+
+#### Steps to Publish on Packagist:
+1. Create a GitHub repository (e.g. `https://github.com/your-username/laravel-database-studio`).
+2. Push your package code:
+   ```bash
+   git init
+   git add .
+   git commit -m "feat: initial release of database studio package"
+   git remote add origin https://github.com/your-username/laravel-database-studio.git
+   git tag 1.0.0
+   git push -u origin main --tags
+   ```
+3. Log in to [Packagist.org](https://packagist.org), click **Submit**, and paste your GitHub repository URL.
 
 ---
 
@@ -82,7 +116,11 @@ php artisan vendor:publish --tag=database-studio-config
 Open your browser and navigate to:
 
 ```text
-http://your-app.test/database-studio
+http://localhost/jobQueue/public/database-studio
+```
+or
+```text
+http://jobqueue.test/database-studio
 ```
 
 ---
