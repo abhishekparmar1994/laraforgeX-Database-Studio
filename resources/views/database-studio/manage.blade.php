@@ -208,8 +208,8 @@
               placeholder="Quick search all columns…">
           </div>
 
-          <!-- Navicat Filter Toggle Button -->
-          <button type="button" id="btn-toggle-navicat-filter"
+          <!-- Query Filter Toggle Button -->
+          <button type="button" id="btn-toggle-query-filter"
             class="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 text-slate-600 hover:text-indigo-700 text-xs font-bold transition cursor-pointer group"
             title="Toggle Advanced Filters">
             <i class="fa-solid fa-filter text-xs group-hover:text-indigo-600 transition"></i>
@@ -255,8 +255,8 @@
           <span id="data-pagination-info" class="text-xs font-semibold text-slate-500 flex-shrink-0">Loading data…</span>
         </div>
 
-        <!-- Navicat Filter Builder Bar -->
-        <div id="navicat-filter-bar" class="hidden border border-indigo-200 bg-indigo-50/60 rounded-2xl p-4 space-y-3">
+        <!-- Query Filter Builder Bar -->
+        <div id="query-filter-bar" class="hidden border border-indigo-200 bg-indigo-50/60 rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-filter text-indigo-600 text-xs"></i>
@@ -704,8 +704,8 @@
       $('#btn-data-next').on('click', function () { changeDataPage(1); });
 
       /* Filter Bar Events */
-      $('#btn-toggle-navicat-filter').on('click', function () {
-        const $bar = $('#navicat-filter-bar');
+      $('#btn-toggle-query-filter').on('click', function () {
+        const $bar = $('#query-filter-bar');
         const isHidden = $bar.hasClass('hidden');
         $bar.toggleClass('hidden', !isHidden);
         $(this).toggleClass('bg-indigo-100 border-indigo-400 text-indigo-700', isHidden);

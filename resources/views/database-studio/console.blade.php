@@ -1,6 +1,6 @@
 @extends('database-studio::layouts.app')
 
-@section('title', 'Laraforge — Navicat Grade SQL Query Studio')
+@section('title', 'LaraforgeX — SQL Query Console')
 
 @section('content')
   <div class="space-y-4 font-sans w-full select-none">
@@ -14,10 +14,10 @@
       <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div class="flex items-center gap-2 text-brand-300 text-xs font-bold uppercase tracking-widest mb-1">
-            <i class="fa-solid fa-laptop-code text-amber-300"></i> NAVICAT & HEIDISQL GRADE DESKTOP STUDIO
+            <i class="fa-solid fa-laptop-code text-amber-300"></i> LARAFORGEX DESKTOP STUDIO
           </div>
           <h1 class="text-xl font-extrabold tracking-tight flex items-center gap-2">
-            <i class="fa-solid fa-terminal text-emerald-400"></i> Navicat SQL Query Console
+            <i class="fa-solid fa-terminal text-emerald-400"></i> SQL Query Console
           </h1>
           <p class="text-xs text-slate-300 mt-0.5">
             Full-featured SQL Query Editor with connection selectors, query formatter, row selector, and CSV/Excel
@@ -60,10 +60,6 @@
           <i class="fa-solid fa-play text-xs text-emerald-200"></i> Run Query
         </button>
 
-        <button type="button" id="btn-navicat-stop"
-          class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition border border-slate-200 inline-flex items-center gap-1.5 cursor-pointer">
-          <i class="fa-solid fa-square text-rose-500 text-[10px]"></i> Stop
-        </button>
 
         <div class="h-4 w-px bg-slate-200 mx-1"></div>
 
@@ -172,7 +168,8 @@
           <div id="sql-console-result-container"
             class="border border-slate-200 rounded-xl overflow-hidden overflow-x-auto shadow-xs text-xs font-mono bg-white min-h-[120px]">
             <div class="p-8 text-center text-slate-400 font-sans italic">
-              Click <b class="text-emerald-600">"▶ Run Query"</b> or press <b class="text-slate-700 font-mono">Ctrl + Enter</b> to view SQL execution results.
+              Click <b class="text-emerald-600">"▶ Run Query"</b> or press <b class="text-slate-700 font-mono">Ctrl +
+                Enter</b> to view SQL execution results.
             </div>
           </div>
         </div>
@@ -212,243 +209,257 @@
 @endsection
 
 @section('scripts')
-<script>
-  $(document.ready ? $(document) : $(window)).ready(function () {
-    const apiBasePath = "{{ url(config('database-studio.api_prefix', 'api/v1/database-manager')) }}";
-    let _lastResultData = null;
+  <script>
+    $(document.ready ? $(document) : $(window)).ready(function () {
+      const apiBasePath = "{{ url(config('database-studio.api_prefix', 'api/v1/database-manager')) }}";
+      let _lastResultData = null;
 
-    $.ajaxSetup({
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      }
-    });
-
-    const SNIPPETS = [
-      { label: 'SELECT Syntax', category: 'DML', desc: 'Retrieve rows selected from one or more tables', sql: 'SELECT * FROM table_name WHERE 1=1 ORDER BY id DESC LIMIT 25;' },
-      { label: 'INSERT Syntax', category: 'DML', desc: 'Insert new rows into an existing table', sql: 'INSERT INTO table_name (col1, col2) VALUES (\'val1\', \'val2\');' },
-      { label: 'UPDATE Syntax', category: 'DML', desc: 'Updates columns of existing rows in the named table', sql: 'UPDATE table_name SET col1 = \'val1\' WHERE id = 1;' },
-      { label: 'DELETE Syntax', category: 'DML', desc: 'Delete rows from specified table', sql: 'DELETE FROM table_name WHERE id = 1;' },
-      { label: 'INNER JOIN Syntax', category: 'DML', desc: 'Join two tables on foreign key match', sql: 'SELECT t1.*, t2.name FROM table1 t1\nINNER JOIN table2 t2 ON t1.t2_id = t2.id\nLIMIT 25;' },
-      { label: 'CREATE TABLE Syntax', category: 'DDL', desc: 'Create a new table definition', sql: 'CREATE TABLE new_table (\n  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP\n) ENGINE=InnoDB;' },
-      { label: 'ALTER TABLE Add Column', category: 'DDL', desc: 'Add a new column to existing table', sql: 'ALTER TABLE table_name ADD COLUMN new_col VARCHAR(255) NULL AFTER id;' },
-      { label: 'DROP TABLE Syntax', category: 'DDL', desc: 'Drop table completely', sql: 'DROP TABLE IF EXISTS table_name;' },
-      { label: 'SHOW TABLES', category: 'SYSTEM', desc: 'List all database tables', sql: 'SHOW TABLES;' },
-      { label: 'SHOW PROCESSLIST', category: 'SYSTEM', desc: 'List active database worker threads', sql: 'SHOW PROCESSLIST;' }
-    ];
-
-    renderSnippets(SNIPPETS);
-
-    $('#snippet-search-input, #snippet-category-select').on('input change', function () {
-      const q = $('#snippet-search-input').val().toLowerCase().trim();
-      const cat = $('#snippet-category-select').val();
-
-      const filtered = $.grep(SNIPPETS, function (s) {
-        const matchCat = (cat === 'ALL' || s.category === cat);
-        const matchQ = (!q || s.label.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q));
-        return matchCat && matchQ;
-      });
-
-      renderSnippets(filtered);
-    });
-
-    $(document).on('click', '.snippet-item', function () {
-      const sql = $(this).data('sql');
-      $('#sql-console-editor').val(sql);
-      updateLineNumbers();
-    });
-
-    $('#btn-navicat-run').on('click', executeQuery);
-    $('#btn-navicat-explain').on('click', function () {
-      const sql = $('#sql-console-editor').val().trim();
-      if (!sql) return;
-      $('#sql-console-editor').val(`EXPLAIN ${sql}`);
-      executeQuery();
-    });
-
-    $('#btn-navicat-beautify').on('click', function () {
-      let sql = $('#sql-console-editor').val();
-      sql = sql.replace(/\s+/g, ' ')
-               .replace(/\s*,/g, ',')
-               .replace(/\s*SELECT\s*/gi, 'SELECT\n  ')
-               .replace(/\s*FROM\s*/gi, '\nFROM\n  ')
-               .replace(/\s*WHERE\s*/gi, '\nWHERE\n  ')
-               .replace(/\s*ORDER BY\s*/gi, '\nORDER BY\n  ')
-               .replace(/\s*LIMIT\s*/gi, '\nLIMIT ');
-      $('#sql-console-editor').val(sql.trim());
-      updateLineNumbers();
-    });
-
-    $('#btn-navicat-clear').on('click', function () {
-      $('#sql-console-editor').val('');
-      updateLineNumbers();
-    });
-
-    $('#btn-toggle-export-menu').on('click', function (e) {
-      e.stopPropagation();
-      $('#export-menu-dropdown').toggleClass('hidden');
-    });
-
-    $(document).on('click', function (e) {
-      if (!$(e.target).closest('#export-dropdown-wrapper').length) {
-        $('#export-menu-dropdown').addClass('hidden');
-      }
-    });
-
-    $('.btn-do-export').on('click', function () {
-      const format = $(this).data('format');
-      $('#export-menu-dropdown').addClass('hidden');
-      if (!_lastResultData || !_lastResultData.rows || _lastResultData.rows.length === 0) {
-        window.showToast('warning', 'No query results available to export.');
-        return;
-      }
-      exportResultData(_lastResultData, format);
-    });
-
-    $('#sql-console-editor').on('input keyup', updateLineNumbers);
-
-    function updateLineNumbers() {
-      const lines = $('#sql-console-editor').val().split('\n').length;
-      let html = '';
-      for (let i = 1; i <= Math.max(1, lines); i++) {
-        html += i + '<br>';
-      }
-      $('#editor-gutter').html(html);
-    }
-
-    function renderSnippets(list) {
-      const $c = $('#snippets-list-container');
-      if (list.length === 0) {
-        $c.html('<div class="p-4 text-center text-xs text-slate-400 italic">No snippets found matching filters.</div>');
-        return;
-      }
-      let html = '';
-      $.each(list, function (i, s) {
-        html += `
-          <div data-sql="${s.sql.replace(/"/g, '&quot;')}" class="snippet-item p-2.5 rounded-xl border border-slate-200 hover:border-brand-300 hover:bg-brand-50/50 transition cursor-pointer group">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold text-slate-800 group-hover:text-brand-600 transition">${s.label}</span>
-              <span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-slate-100 text-slate-600 border border-slate-200">${s.category}</span>
-            </div>
-            <p class="text-[11px] text-slate-500 font-sans line-clamp-1">${s.desc}</p>
-          </div>
-        `;
-      });
-      $c.html(html);
-    }
-
-    function executeQuery() {
-      const sql = $('#sql-console-editor').val().trim();
-      if (!sql) {
-        window.showToast('warning', 'Please enter an SQL query to execute.');
-        return;
-      }
-
-      const $container = $('#sql-console-result-container');
-      const $badge = $('#sql-exec-badge');
-
-      $badge.attr('class', 'px-2.5 py-1 rounded-md text-[11px] font-bold font-mono bg-amber-100 text-amber-700 border border-amber-200')
-            .html('<i class="fa-solid fa-circle-notch fa-spin text-xs"></i> Executing');
-
-      $container.html('<div class="p-8 text-center text-slate-400 font-sans"><i class="fa-solid fa-circle-notch fa-spin text-lg mb-2"></i><p>Executing SQL query on database…</p></div>');
-
-      $.ajax({
-        url: `${apiBasePath}/execute-sql`,
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ sql: sql }),
-        success: function (res) {
-          if (res.success) {
-            _lastResultData = res.data;
-            $badge.attr('class', 'px-2.5 py-1 rounded-md text-[11px] font-bold font-mono bg-emerald-100 text-emerald-700 border border-emerald-200')
-                  .text(`OK (${res.data.execution_time})`);
-
-            renderQueryResult(res.data);
-          }
-        },
-        error: function (xhr) {
-          $badge.attr('class', 'px-2.5 py-1 rounded-md text-[11px] font-bold font-mono bg-rose-100 text-rose-700 border border-rose-200')
-                .text('ERROR');
-          const err = xhr.responseJSON?.message || 'Query execution failed.';
-          $container.html(`
-            <div class="p-5 bg-rose-50 text-rose-700 font-mono text-xs leading-relaxed">
-              <i class="fa-solid fa-triangle-exclamation text-rose-600 mr-2 text-sm"></i> ${err}
-            </div>
-          `);
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
       });
-    }
 
-    function renderQueryResult(d) {
-      const $container = $('#sql-console-result-container');
+      const SNIPPETS = [
+        { label: 'SELECT Syntax', category: 'DML', desc: 'Retrieve rows selected from one or more tables', sql: 'SELECT * FROM table_name WHERE 1=1 ORDER BY id DESC LIMIT 25;' },
+        { label: 'INSERT Syntax', category: 'DML', desc: 'Insert new rows into an existing table', sql: 'INSERT INTO table_name (col1, col2) VALUES (\'val1\', \'val2\');' },
+        { label: 'UPDATE Syntax', category: 'DML', desc: 'Updates columns of existing rows in the named table', sql: 'UPDATE table_name SET col1 = \'val1\' WHERE id = 1;' },
+        { label: 'DELETE Syntax', category: 'DML', desc: 'Delete rows from specified table', sql: 'DELETE FROM table_name WHERE id = 1;' },
+        { label: 'INNER JOIN Syntax', category: 'DML', desc: 'Join two tables on foreign key match', sql: 'SELECT t1.*, t2.name FROM table1 t1\nINNER JOIN table2 t2 ON t1.t2_id = t2.id\nLIMIT 25;' },
+        { label: 'CREATE TABLE Syntax', category: 'DDL', desc: 'Create a new table definition', sql: 'CREATE TABLE new_table (\n  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP\n) ENGINE=InnoDB;' },
+        { label: 'ALTER TABLE Add Column', category: 'DDL', desc: 'Add a new column to existing table', sql: 'ALTER TABLE table_name ADD COLUMN new_col VARCHAR(255) NULL AFTER id;' },
+        { label: 'DROP TABLE Syntax', category: 'DDL', desc: 'Drop table completely', sql: 'DROP TABLE IF EXISTS table_name;' },
+        { label: 'SHOW TABLES', category: 'SYSTEM', desc: 'List all database tables', sql: 'SHOW TABLES;' },
+        { label: 'SHOW PROCESSLIST', category: 'SYSTEM', desc: 'List active database worker threads', sql: 'SHOW PROCESSLIST;' }
+      ];
 
-      if (d.type === 'SELECT' || d.type === 'SHOW' || d.type === 'EXPLAIN' || d.type === 'DESCRIBE') {
-        const rows = d.rows || [];
-        if (rows.length === 0) {
-          $container.html(`<div class="p-6 text-center text-slate-400 italic font-sans">Query executed successfully in ${d.execution_time}. 0 rows returned.</div>`);
+      renderSnippets(SNIPPETS);
+
+      $('#snippet-search-input, #snippet-category-select').on('input change', function () {
+        const q = $('#snippet-search-input').val().toLowerCase().trim();
+        const cat = $('#snippet-category-select').val();
+
+        const filtered = $.grep(SNIPPETS, function (s) {
+          const matchCat = (cat === 'ALL' || s.category === cat);
+          const matchQ = (!q || s.label.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q));
+          return matchCat && matchQ;
+        });
+
+        renderSnippets(filtered);
+      });
+
+      $(document).on('click', '.snippet-item', function () {
+        const sql = $(this).data('sql');
+        $('#sql-console-editor').val(sql);
+        updateLineNumbers();
+      });
+
+      $('#btn-navicat-run').on('click', executeQuery);
+      $('#btn-navicat-explain').on('click', function () {
+        const sql = $('#sql-console-editor').val().trim();
+        if (!sql) return;
+        $('#sql-console-editor').val(`EXPLAIN ${sql}`);
+        executeQuery();
+      });
+
+      $('#btn-navicat-beautify').on('click', function () {
+        let sql = $('#sql-console-editor').val();
+        sql = sql.replace(/\s+/g, ' ')
+          .replace(/\s*,/g, ',')
+          .replace(/\s*SELECT\s*/gi, 'SELECT\n  ')
+          .replace(/\s*FROM\s*/gi, '\nFROM\n  ')
+          .replace(/\s*WHERE\s*/gi, '\nWHERE\n  ')
+          .replace(/\s*ORDER BY\s*/gi, '\nORDER BY\n  ')
+          .replace(/\s*LIMIT\s*/gi, '\nLIMIT ');
+        $('#sql-console-editor').val(sql.trim());
+        updateLineNumbers();
+      });
+
+      $('#btn-navicat-clear').on('click', function () {
+        $('#sql-console-editor').val('');
+        updateLineNumbers();
+      });
+
+      $('#btn-navicat-save').on('click', function () {
+        const sql = $('#sql-console-editor').val().trim();
+        if (!sql) {
+          window.showToast('warning', 'No SQL query to save.');
+          return;
+        }
+        const blob = new Blob([sql], { type: 'text/plain;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const $a = $('<a>').attr({ href: url, download: `query_${Date.now()}.sql` }).appendTo('body');
+        $a[0].click();
+        $a.remove();
+        window.showToast('success', 'SQL query file downloaded!');
+      });
+
+      $('#btn-toggle-export-menu').on('click', function (e) {
+        e.stopPropagation();
+        $('#export-menu-dropdown').toggleClass('hidden');
+      });
+
+      $(document).on('click', function (e) {
+        if (!$(e.target).closest('#export-dropdown-wrapper').length) {
+          $('#export-menu-dropdown').addClass('hidden');
+        }
+      });
+
+      $('.btn-do-export').on('click', function () {
+        const format = $(this).data('format');
+        $('#export-menu-dropdown').addClass('hidden');
+        if (!_lastResultData || !_lastResultData.rows || _lastResultData.rows.length === 0) {
+          window.showToast('warning', 'No query results available to export.');
+          return;
+        }
+        exportResultData(_lastResultData, format);
+      });
+
+      $('#sql-console-editor').on('input keyup', updateLineNumbers);
+
+      function updateLineNumbers() {
+        const lines = $('#sql-console-editor').val().split('\n').length;
+        let html = '';
+        for (let i = 1; i <= Math.max(1, lines); i++) {
+          html += i + '<br>';
+        }
+        $('#editor-gutter').html(html);
+      }
+
+      function renderSnippets(list) {
+        const $c = $('#snippets-list-container');
+        if (list.length === 0) {
+          $c.html('<div class="p-4 text-center text-xs text-slate-400 italic">No snippets found matching filters.</div>');
+          return;
+        }
+        let html = '';
+        $.each(list, function (i, s) {
+          html += `
+            <div data-sql="${s.sql.replace(/"/g, '&quot;')}" class="snippet-item p-2.5 rounded-xl border border-slate-200 hover:border-brand-300 hover:bg-brand-50/50 transition cursor-pointer group">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-bold text-slate-800 group-hover:text-brand-600 transition">${s.label}</span>
+                <span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-slate-100 text-slate-600 border border-slate-200">${s.category}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 font-sans line-clamp-1">${s.desc}</p>
+            </div>
+          `;
+        });
+        $c.html(html);
+      }
+
+      function executeQuery() {
+        const sql = $('#sql-console-editor').val().trim();
+        if (!sql) {
+          window.showToast('warning', 'Please enter an SQL query to execute.');
           return;
         }
 
-        const cols = d.columns || Object.keys(rows[0]);
+        const $container = $('#sql-console-result-container');
+        const $badge = $('#sql-exec-badge');
 
-        let headerHtml = `<thead class="bg-slate-100 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-500 sticky top-0"><tr>`;
-        $.each(cols, function (i, c) { headerHtml += `<th class="p-3 font-mono">${c}</th>`; });
-        headerHtml += `</tr></thead>`;
+        $badge.attr('class', 'px-2.5 py-1 rounded-md text-[11px] font-bold font-mono bg-amber-100 text-amber-700 border border-amber-200')
+          .html('<i class="fa-solid fa-circle-notch fa-spin text-xs"></i> Executing');
 
-        let bodyHtml = `<tbody class="divide-y divide-slate-100 text-xs">`;
-        $.each(rows, function (i, r) {
-          bodyHtml += `<tr class="hover:bg-indigo-50/30 transition">`;
-          $.each(cols, function (j, c) {
-            const val = r[c];
-            const display = (val === null || val === undefined)
-              ? `<span class="text-slate-300 font-sans italic">NULL</span>`
-              : String(val).length > 120
-                ? `<span title="${String(val).replace(/"/g, '&quot;')}">${String(val).substring(0, 120)}…</span>`
-                : val;
-            bodyHtml += `<td class="p-3 max-w-[200px] truncate">${display}</td>`;
-          });
-          bodyHtml += `</tr>`;
-        });
-        bodyHtml += `</tbody>`;
+        $container.html('<div class="p-8 text-center text-slate-400 font-sans"><i class="fa-solid fa-circle-notch fa-spin text-lg mb-2"></i><p>Executing SQL query on database…</p></div>');
 
-        $container.html(`<table class="w-full text-left border-collapse">${headerHtml}${bodyHtml}</table>`);
-      } else {
-        $container.html(`
-          <div class="p-5 bg-emerald-50 text-emerald-800 text-xs font-sans font-medium flex items-center gap-3">
-            <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
-            <div>
-              <div class="font-bold text-sm">Query Executed Successfully</div>
-              <div class="text-emerald-700 text-xs mt-0.5">Affected rows: <b>${d.affected_rows}</b> · Time: <b>${d.execution_time}</b></div>
-            </div>
-          </div>
-        `);
-      }
-    }
+        $.ajax({
+          url: `${apiBasePath}/execute-sql`,
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ sql: sql }),
+          success: function (res) {
+            if (res.success) {
+              _lastResultData = res.data;
+              $badge.attr('class', 'px-2.5 py-1 rounded-md text-[11px] font-bold font-mono bg-emerald-100 text-emerald-700 border border-emerald-200')
+                .text(`OK (${res.data.execution_time})`);
 
-    function exportResultData(data, format) {
-      const rows = data.rows || [];
-      const cols = data.columns || (rows[0] ? Object.keys(rows[0]) : []);
-      if (rows.length === 0) return;
-
-      if (format === 'csv') {
-        let csv = cols.join(',') + '\n';
-        $.each(rows, function (i, r) {
-          const rowVals = cols.map(function (c) {
-            let v = r[c] !== null && r[c] !== undefined ? String(r[c]) : '';
-            if (v.includes(',') || v.includes('"') || v.includes('\n')) {
-              v = '"' + v.replace(/"/g, '""') + '"';
+              renderQueryResult(res.data);
             }
-            return v;
-          });
-          csv += rowVals.join(',') + '\n';
+          },
+          error: function (xhr) {
+            $badge.attr('class', 'px-2.5 py-1 rounded-md text-[11px] font-bold font-mono bg-rose-100 text-rose-700 border border-rose-200')
+              .text('ERROR');
+            const err = xhr.responseJSON?.message || 'Query execution failed.';
+            $container.html(`
+              <div class="p-5 bg-rose-50 text-rose-700 font-mono text-xs leading-relaxed">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600 mr-2 text-sm"></i> ${err}
+              </div>
+            `);
+          }
         });
-
-        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const $a = $('<a>').attr({ href: url, download: `query_export_${Date.now()}.csv` }).appendTo('body');
-        $a[0].click();
-        $a.remove();
       }
-    }
-  });
-</script>
+
+      function renderQueryResult(d) {
+        const $container = $('#sql-console-result-container');
+
+        if (d.type === 'SELECT' || d.type === 'SHOW' || d.type === 'EXPLAIN' || d.type === 'DESCRIBE') {
+          const rows = d.rows || [];
+          if (rows.length === 0) {
+            $container.html(`<div class="p-6 text-center text-slate-400 italic font-sans">Query executed successfully in ${d.execution_time}. 0 rows returned.</div>`);
+            return;
+          }
+
+          const cols = d.columns || Object.keys(rows[0]);
+
+          let headerHtml = `<thead class="bg-slate-100 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-500 sticky top-0"><tr>`;
+          $.each(cols, function (i, c) { headerHtml += `<th class="p-3 font-mono">${c}</th>`; });
+          headerHtml += `</tr></thead>`;
+
+          let bodyHtml = `<tbody class="divide-y divide-slate-100 text-xs">`;
+          $.each(rows, function (i, r) {
+            bodyHtml += `<tr class="hover:bg-indigo-50/30 transition">`;
+            $.each(cols, function (j, c) {
+              const val = r[c];
+              const display = (val === null || val === undefined)
+                ? `<span class="text-slate-300 font-sans italic">NULL</span>`
+                : String(val).length > 120
+                  ? `<span title="${String(val).replace(/"/g, '&quot;')}">${String(val).substring(0, 120)}…</span>`
+                  : val;
+              bodyHtml += `<td class="p-3 max-w-[200px] truncate">${display}</td>`;
+            });
+            bodyHtml += `</tr>`;
+          });
+          bodyHtml += `</tbody>`;
+
+          $container.html(`<table class="w-full text-left border-collapse">${headerHtml}${bodyHtml}</table>`);
+        } else {
+          $container.html(`
+            <div class="p-5 bg-emerald-50 text-emerald-800 text-xs font-sans font-medium flex items-center gap-3">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+              <div>
+                <div class="font-bold text-sm">Query Executed Successfully</div>
+                <div class="text-emerald-700 text-xs mt-0.5">Affected rows: <b>${d.affected_rows}</b> · Time: <b>${d.execution_time}</b></div>
+              </div>
+            </div>
+          `);
+        }
+      }
+
+      function exportResultData(data, format) {
+        const rows = data.rows || [];
+        const cols = data.columns || (rows[0] ? Object.keys(rows[0]) : []);
+        if (rows.length === 0) return;
+
+        if (format === 'csv') {
+          let csv = cols.join(',') + '\n';
+          $.each(rows, function (i, r) {
+            const rowVals = cols.map(function (c) {
+              let v = r[c] !== null && r[c] !== undefined ? String(r[c]) : '';
+              if (v.includes(',') || v.includes('"') || v.includes('\n')) {
+                v = '"' + v.replace(/"/g, '""') + '"';
+              }
+              return v;
+            });
+            csv += rowVals.join(',') + '\n';
+          });
+
+          const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const $a = $('<a>').attr({ href: url, download: `query_export_${Date.now()}.csv` }).appendTo('body');
+          $a[0].click();
+          $a.remove();
+        }
+      }
+    });
+  </script>
 @endsection

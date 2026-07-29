@@ -178,7 +178,7 @@
     <!-- Footer (Full Width) -->
     <footer class="border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-400">
       <div class="w-full px-6">
-        <p>Powered by <strong>LaraforgeX Database Studio</strong> — Navicat & phpMyAdmin Grade GUI Package for Laravel.</p>
+        <p>Powered by <strong>LaraforgeX Database Studio</strong> — High Performance Database Management GUI Package for Laravel.</p>
       </div>
     </footer>
 

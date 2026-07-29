@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/laraforge/database-studio.svg?style=flat-shadow)](https://packagist.org/packages/laraforge/database-studio)
 [![License](https://img.shields.io/packagist/l/laraforge/database-studio.svg?style=flat-shadow)](https://packagist.org/packages/laraforge/database-studio)
 
-A self-contained, Navicat & phpMyAdmin grade **Database Studio & Table Manager GUI** for Laravel 10, 11, 12, and 13 applications.
+A self-contained, powerful **LaraforgeX Database Studio & Table Manager GUI** for Laravel 10, 11, 12, and 13 applications.
 
 ---
 
@@ -14,13 +14,13 @@ A self-contained, Navicat & phpMyAdmin grade **Database Studio & Table Manager G
 | :---: | :---: |
 | ![Dashboard Explorer](art/main_page.jpg) | ![Visual Table Creator](art/create_table_page.jpg) |
 
-| Table Column Modifier | Browse Data & Navicat Filters |
+| Table Column Modifier | Browse Data & Filter Builder |
 | :---: | :---: |
 | ![Table Column Modifier](art/table_column_modify_page.jpg) | ![Browse Data with Filters](art/browse_data_with_filters_page.jpg) |
 
-| Navicat SQL Console | Security Login Gateway |
+| Interactive SQL Console | Security Login Gateway |
 | :---: | :---: |
-| ![Navicat SQL Console](art/console_page.jpg) | ![Security Login Gateway](art/login_page.jpg) |
+| ![Interactive SQL Console](art/console_page.jpg) | ![Security Login Gateway](art/login_page.jpg) |
 
 ---
 
@@ -129,28 +129,6 @@ http://mysite.test/database-studio
 
 ---
 
-## 🔄 Updating Database Studio
-
-When updating `laraforge/database-studio`, follow these steps to clear Laravel's view/config cache and update assets:
-
-### Step 1: Update Package via Composer
-```bash
-composer update laraforge/database-studio
-```
-
-### Step 2: Clear Laravel View & Config Caches (Required)
-Laravel caches compiled Blade views and config files. Clear them to load updated views:
-```bash
-php artisan optimize:clear
-```
-
-### Step 3: Force Re-publish Updated Config/Views (If Previously Published)
-```bash
-php artisan vendor:publish --tag=database-studio-views --force
-php artisan vendor:publish --tag=database-studio-config --force
-```
-
----
 
 ## 🗑️ Uninstalling & Removing Package
 

@@ -11,7 +11,7 @@
       <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div class="flex items-center gap-2 text-brand-200 text-xs font-bold uppercase tracking-widest mb-1">
-            <i class="fa-solid fa-table-cells text-amber-300"></i> NAVICAT & PHPMYADMIN GRADE GUI
+            <i class="fa-solid fa-table-cells text-amber-300"></i> LARAFORGEX DATABASE STUDIO
           </div>
           <h1 class="text-2xl font-extrabold tracking-tight">Database Studio & Table Explorer</h1>
           <p class="text-sm text-brand-100 mt-1 max-w-2xl">
