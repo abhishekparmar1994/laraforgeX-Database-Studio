@@ -22,6 +22,7 @@ A self-contained, Navicat & phpMyAdmin grade **Database Studio & Table Manager G
 
 ## 🌟 Key Features
 
+- 🔐 **Security Gateway & Auth Guard**: Protected with an authentication login gateway (customizable via `.env` credentials).
 - ⚡ **Zero DB Setup Needed**: Automatically detects and uses your host Laravel application's active database connection credentials from your `.env` file out-of-the-box.
 - 📊 **Interactive Database Dashboard**: View table engine types, estimated row counts, data/index disk sizes, and table collations.
 - 🛠️ **Visual Table Creator Wizard**: Design new database tables, define column data types, precision, nullability, auto-increments, and default values.
@@ -29,6 +30,22 @@ A self-contained, Navicat & phpMyAdmin grade **Database Studio & Table Manager G
 - 💻 **Interactive SQL Console**: Execute raw `SELECT`, `INSERT`, `UPDATE`, `ALTER`, or `CREATE` queries directly from your browser.
 - 📥 **One-Click CSV / Excel Exporter**: Export filtered table records directly to UTF-8 CSV or XML Excel formats.
 - 🔒 **Safety Guards**: Protect critical system tables (`migrations`, `failed_jobs`, `users`) from accidental truncation or dropping.
+
+---
+
+## 🔐 Security Authentication (.env Setup)
+
+To prevent unauthorized access to your database manager, **Database Studio** includes a built-in security gateway login screen.
+
+Set your security credentials in your `.env` file:
+
+```env
+DB_STUDIO_AUTH_ENABLED=true
+DB_STUDIO_AUTH_USERNAME=admin@admin.com
+DB_STUDIO_AUTH_PASSWORD=admin123
+```
+
+When users visit `/database-studio`, they will be prompted to enter the username and password defined above before gaining access to the database dashboard, console, or API.
 
 ---
 
@@ -132,6 +149,11 @@ return [
     'enabled' => env('DB_STUDIO_ENABLED', true),
     'path' => env('DB_STUDIO_PATH', 'database-studio'),
     'api_prefix' => env('DB_STUDIO_API_PREFIX', 'api/v1/database-manager'),
+    'auth' => [
+        'enabled'  => env('DB_STUDIO_AUTH_ENABLED', true),
+        'username' => env('DB_STUDIO_AUTH_USERNAME', 'admin@admin.com'),
+        'password' => env('DB_STUDIO_AUTH_PASSWORD', 'admin123'),
+    ],
     'middleware' => [
         'web' => ['web'],
         'api' => ['api'],
@@ -142,6 +164,7 @@ return [
         'migrations',
         'failed_jobs',
         'personal_access_tokens',
+        'password_reset_tokens',
     ],
 ];
 ```

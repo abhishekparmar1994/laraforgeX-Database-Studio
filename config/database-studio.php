@@ -29,6 +29,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Authentication Security Settings
+    |--------------------------------------------------------------------------
+    | Require username/email & password login before accessing Database Studio.
+    | Credentials can be customized via .env or in this config file.
+    */
+    'auth' => [
+        'enabled'  => env('DB_STUDIO_AUTH_ENABLED', true),
+        'username' => env('DB_STUDIO_AUTH_USERNAME', 'admin@admin.com'),
+        'password' => env('DB_STUDIO_AUTH_PASSWORD', 'admin123'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Route Middleware
     |--------------------------------------------------------------------------
     | The middleware assigned to Database Studio web and API routes.

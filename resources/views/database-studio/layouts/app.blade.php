@@ -83,6 +83,13 @@
              class="px-3.5 py-2 rounded-lg text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
             <i class="fa-solid fa-terminal text-amber-400"></i> SQL Console
           </a>
+
+          @if(config('database-studio.auth.enabled', true))
+            <a href="{{ url(config('database-studio.path', 'database-studio') . '/logout') }}" 
+               class="ml-2 px-3 py-1.5 rounded-lg text-xs font-bold text-rose-300 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/50 transition flex items-center gap-1.5" title="Sign out of Database Studio session">
+              <i class="fa-solid fa-right-from-bracket text-rose-400 text-[11px]"></i> Logout
+            </a>
+          @endif
         </nav>
       </div>
     </header>
