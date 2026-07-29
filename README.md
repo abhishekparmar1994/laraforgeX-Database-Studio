@@ -144,21 +144,29 @@ http://jobqueue.test/database-studio
 
 ## 🔄 Updating Database Studio
 
-When a new version of `laraforge/database-studio` is released, users can update in two simple steps:
+When updating `laraforge/database-studio`, follow these steps to clear Laravel's view/config cache and update assets:
 
-### Step 1: Update via Composer
-
+### Step 1: Update Package via Composer
 ```bash
 composer update laraforge/database-studio
 ```
 
-### Step 2: Re-publish Configuration File (Optional)
-
-If the update introduces new configuration settings, users can force update their published config file:
-
+### Step 2: Clear Laravel View & Config Caches (Required)
+Laravel caches compiled Blade views and config files. Clear them to load updated views:
 ```bash
+php artisan optimize:clear
+```
+*(Or run `php artisan view:clear && php artisan config:clear`)*
+
+### Step 3: Force Re-publish Updated Config/Views (If Previously Published)
+If views or configs were published previously to `resources/views/vendor/database-studio`:
+```bash
+php artisan vendor:publish --tag=database-studio-views --force
 php artisan vendor:publish --tag=database-studio-config --force
 ```
+
+### Step 4: Hard Reload Browser
+Press `Ctrl + F5` or `Ctrl + Shift + R` in the browser to clear cached CSS/JS.
 
 ---
 
@@ -176,7 +184,7 @@ return [
     ],
     'middleware' => [
         'web' => ['web'],
-        'api' => ['api'],
+        'api' => ['web', 'api'],
     ],
     // Automatically fetched from env('DB_CONNECTION') if null
     'connection' => env('DB_STUDIO_CONNECTION', null),
