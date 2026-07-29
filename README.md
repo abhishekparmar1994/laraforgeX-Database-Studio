@@ -1,4 +1,4 @@
-# Laravel Database Studio & Table Manager GUI
+# LaraforgeX Database Studio & Table Manager GUI
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laraforge/database-studio.svg?style=flat-shadow)](https://packagist.org/packages/laraforge/database-studio)
 [![Total Downloads](https://img.shields.io/packagist/dt/laraforge/database-studio.svg?style=flat-shadow)](https://packagist.org/packages/laraforge/database-studio)
@@ -12,11 +12,15 @@ A self-contained, Navicat & phpMyAdmin grade **Database Studio & Table Manager G
 
 | Dashboard Explorer | Visual Table Creator |
 | :---: | :---: |
-| ![Database Studio Dashboard](art/dashboard.png) | ![Visual Table Creator](art/create-table.png) |
+| ![Dashboard Explorer](art/main_page.jpg) | ![Visual Table Creator](art/create_table_page.jpg) |
 
-| SQL Query Console | Table Inspector & Data Grid |
+| Table Column Modifier | Browse Data & Navicat Filters |
 | :---: | :---: |
-| ![SQL Console](art/sql-console.png) | ![Table Inspector](art/inspect-table.png) |
+| ![Table Column Modifier](art/table_column_modify_page.jpg) | ![Browse Data with Filters](art/browse_data_with_filters_page.jpg) |
+
+| Navicat SQL Console | Security Login Gateway |
+| :---: | :---: |
+| ![Navicat SQL Console](art/console_page.jpg) | ![Security Login Gateway](art/login_page.jpg) |
 
 ---
 
@@ -103,7 +107,9 @@ Once you upload this repository to GitHub and submit it to [Packagist.org](https
 composer require laraforge/database-studio
 ```
 
-### Option 3: Publish Configuration (Optional)
+---
+
+### Step 2: Publish Configuration (Optional)
 
 Publish the `database-studio.php` config file to customize route path, middleware, and protected tables:
 
@@ -113,7 +119,7 @@ php artisan vendor:publish --tag=database-studio-config
 
 ---
 
-### Option 4: Access the Web Dashboard
+### Step 3: Access the Web Dashboard
 
 Open your browser and navigate to:
 
@@ -137,6 +143,14 @@ Laravel caches compiled Blade views and config files. Clear them to load updated
 ```bash
 php artisan optimize:clear
 ```
+
+### Step 3: Force Re-publish Updated Config/Views (If Previously Published)
+```bash
+php artisan vendor:publish --tag=database-studio-views --force
+php artisan vendor:publish --tag=database-studio-config --force
+```
+
+---
 
 ## 🗑️ Uninstalling & Removing Package
 
