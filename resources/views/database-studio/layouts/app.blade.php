@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Database Studio & Table Manager')</title>
+    <title>@yield('title', 'LaraforgeX Database Studio & Table Manager')</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -69,7 +69,7 @@
 </head>
 <body class="bg-slate-50 font-sans antialiased text-slate-800 min-h-screen">
     
-    <!-- Top Navigation Header (Full Width & Responsive) -->
+    <!-- Top Navigation Header (Clean Minimal Header) -->
     <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
       <div class="w-full px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         
@@ -92,23 +92,13 @@
           </a>
         </div>
 
-        <!-- Right Quick Action Links -->
+        <!-- Right Action (Logout Only) -->
         <div class="flex items-center gap-2 sm:gap-3">
-          <a href="{{ url(config('database-studio.path', 'database-studio') . '/create') }}" 
-             class="px-3 py-2 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5 sm:gap-2 no-underline">
-            <i class="fa-solid fa-plus-circle text-emerald-400"></i>
-            <span class="hidden sm:inline">New Table</span>
-          </a>
-          <a href="{{ url(config('database-studio.path', 'database-studio') . '/console') }}" 
-             class="px-3 py-2 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5 sm:gap-2 no-underline">
-            <i class="fa-solid fa-terminal text-amber-400"></i>
-            <span class="hidden sm:inline">SQL Console</span>
-          </a>
           @if(config('database-studio.auth.enabled', true))
             <a href="{{ url(config('database-studio.path', 'database-studio') . '/logout') }}" 
-               class="px-3 py-1.5 rounded-xl text-xs font-bold text-rose-300 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/50 transition flex items-center gap-1.5 no-underline ml-1" title="Sign out of Database Studio session">
+               class="px-3.5 py-2 rounded-xl text-xs font-bold text-rose-300 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/50 transition flex items-center gap-1.5 no-underline ml-1" title="Sign out of Database Studio session">
               <i class="fa-solid fa-right-from-bracket text-rose-400 text-xs"></i>
-              <span class="hidden sm:inline">Logout</span>
+              <span>Logout</span>
             </a>
           @endif
         </div>
@@ -129,28 +119,15 @@
           </button>
         </div>
 
-        <div class="space-y-1">
-          <a href="{{ url(config('database-studio.path', 'database-studio')) }}" 
-             class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-brand-600 transition no-underline">
-            <i class="fa-solid fa-table-cells text-slate-400 text-xs w-4"></i> Dashboard Explorer
-          </a>
-          <a href="{{ url(config('database-studio.path', 'database-studio') . '/create') }}" 
-             class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-emerald-600 transition no-underline">
-            <i class="fa-solid fa-plus text-emerald-500 text-xs w-4"></i> Create New Table
-          </a>
-          <a href="{{ url(config('database-studio.path', 'database-studio') . '/console') }}" 
-             class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-amber-600 transition no-underline">
-            <i class="fa-solid fa-terminal text-amber-500 text-xs w-4"></i> SQL Console
-          </a>
-        </div>
-
+        <!-- Table Search Box -->
         <div class="relative pt-1">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
           <input type="text" class="mobile-sidebar-table-search w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-brand-500 transition"
             placeholder="Search tables…">
         </div>
 
-        <div class="mobile-sidebar-tables-container sidebar-scroll max-h-[calc(100vh-250px)] overflow-y-auto space-y-1 pr-1 font-mono text-xs">
+        <!-- Scrollable Tables List -->
+        <div class="mobile-sidebar-tables-container sidebar-scroll max-h-[calc(100vh-180px)] overflow-y-auto space-y-1 pr-1 font-mono text-xs">
           <div class="p-4 text-center text-slate-400 font-sans text-xs">
             <i class="fa-solid fa-circle-notch fa-spin text-sm mb-1"></i>
             <p>Loading schema…</p>
@@ -174,22 +151,6 @@
           <span class="sb-tables-badge px-2 py-0.5 rounded-full text-[10px] font-black bg-brand-50 text-brand-600 border border-brand-200">0</span>
         </div>
 
-        <!-- Quick Nav Shortcuts -->
-        <div class="space-y-1">
-          <a href="{{ url(config('database-studio.path', 'database-studio')) }}" 
-             class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-brand-600 transition no-underline">
-            <i class="fa-solid fa-table-cells text-slate-400 text-xs w-4"></i> Dashboard Explorer
-          </a>
-          <a href="{{ url(config('database-studio.path', 'database-studio') . '/create') }}" 
-             class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-emerald-600 transition no-underline">
-            <i class="fa-solid fa-plus text-emerald-500 text-xs w-4"></i> Create New Table
-          </a>
-          <a href="{{ url(config('database-studio.path', 'database-studio') . '/console') }}" 
-             class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-amber-600 transition no-underline">
-            <i class="fa-solid fa-terminal text-amber-500 text-xs w-4"></i> SQL Console
-          </a>
-        </div>
-
         <!-- Table Search Box -->
         <div class="relative pt-1">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -198,7 +159,7 @@
         </div>
 
         <!-- Scrollable Tables List -->
-        <div class="desktop-sidebar-tables-container sidebar-scroll max-h-[calc(100vh-280px)] overflow-y-auto space-y-1 pr-1 font-mono text-xs">
+        <div class="desktop-sidebar-tables-container sidebar-scroll max-h-[calc(100vh-220px)] overflow-y-auto space-y-1 pr-1 font-mono text-xs">
           <div class="p-4 text-center text-slate-400 font-sans text-xs">
             <i class="fa-solid fa-circle-notch fa-spin text-sm mb-1"></i>
             <p>Loading schema…</p>
@@ -217,7 +178,7 @@
     <!-- Footer (Full Width) -->
     <footer class="border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-400">
       <div class="w-full px-6">
-        <p>Powered by <strong>Laraforge Database Studio</strong> — Navicat & phpMyAdmin Grade GUI Package for Laravel.</p>
+        <p>Powered by <strong>LaraforgeX Database Studio</strong> — Navicat & phpMyAdmin Grade GUI Package for Laravel.</p>
       </div>
     </footer>
 
