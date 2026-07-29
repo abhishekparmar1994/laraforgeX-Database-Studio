@@ -10,12 +10,36 @@ A self-contained, Navicat & phpMyAdmin grade **Database Studio & Table Manager G
 
 ## 🌟 Key Features
 
+- ⚡ **Zero DB Setup Needed**: Automatically detects and uses your host Laravel application's active database connection credentials from your `.env` file out-of-the-box.
 - 📊 **Interactive Database Dashboard**: View table engine types, estimated row counts, data/index disk sizes, and table collations.
 - 🛠️ **Visual Table Creator Wizard**: Design new database tables, define column data types, precision, nullability, auto-increments, and default values.
 - 🔍 **Schema Inspector & Data Grid**: Inspect columns, indexes, foreign keys, filter records in real-time, and browse live rows.
 - 💻 **Interactive SQL Console**: Execute raw `SELECT`, `INSERT`, `UPDATE`, `ALTER`, or `CREATE` queries directly from your browser.
 - 📥 **One-Click CSV / Excel Exporter**: Export filtered table records directly to UTF-8 CSV or XML Excel formats.
 - 🔒 **Safety Guards**: Protect critical system tables (`migrations`, `failed_jobs`, `users`) from accidental truncation or dropping.
+
+---
+
+## ⚡ Automatic Database Credentials (`.env` Integration)
+
+No manual database setup or credentials entry is required!
+
+Database Studio automatically reads your active database connection (`DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`) from your application's `.env` file:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=root
+DB_PASSWORD=secret
+```
+
+### Need a Secondary Connection?
+To inspect a secondary database connection defined in your `config/database.php`, simply set:
+```env
+DB_STUDIO_CONNECTION=secondary_db
+```
 
 ---
 
@@ -28,8 +52,6 @@ Add the package to your Laravel project via Composer:
 ```bash
 composer require laraforge/database-studio
 ```
-
-*(For local repository development, add `"laraforge/database-studio": "*"` with path repository mapping in your host project's `composer.json`)*.
 
 ---
 
@@ -64,6 +86,7 @@ return [
         'web' => ['web'],
         'api' => ['api'],
     ],
+    // Automatically fetched from env('DB_CONNECTION') if null
     'connection' => env('DB_STUDIO_CONNECTION', null),
     'protected_tables' => [
         'migrations',
